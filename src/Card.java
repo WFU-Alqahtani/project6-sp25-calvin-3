@@ -27,5 +27,11 @@ public class Card {
     public void print_card(){
         System.out.print(suit + ": " + rank);
     }
+    public ranks getRank() {
+        return rank;
+    }
 
+    public suites getSuit() {
+        return suit;
+    }
 }

@@ -27,27 +27,97 @@ public class LinkedList {
 
     // remove a card from a specific index
     public Card remove_from_index(int index) {
-        // FIXME
+        if (index < 0 || index >= size) return null;
+
+        Node curr = head;
+        for (int i = 0; i < index; i++) curr = curr.next;
+
+        if (curr.prev != null) curr.prev.next = curr.next;
+        else head = curr.next;
+
+        if (curr.next != null) curr.next.prev = curr.prev;
+        else tail = curr.prev;
+
+        size--;
+        return curr.data;
     }
 
     // insert a card at a specific index
-    public void insert_at_index(Card x, int index) {
-        // FIXME
+    public void insert_at_index(Card k, int index) {
+        Node newNode = new Node(k);
+        if (index <= 0) {
+            newNode.next = head;
+            if (head != null) head.prev = newNode;
+            head = newNode;
+            if (tail == null) tail = newNode;
+        } else if (index >= size) {
+            add_at_tail(k);
+            return;
+        } else {
+            Node curr = head;
+            for (int i = 0; i < index; i++) curr = curr.next;
+
+            newNode.prev = curr.prev;
+            newNode.next = curr;
+            curr.prev.next = newNode;
+            curr.prev = newNode;
+        }
+        size++;
     }
 
     // swap two cards in the deck at the specific indices
     public void swap(int index1, int index2) {
-        // FIXME
+        if (index1 == index2) return;
+        if (index1 < 0 || index2 < 0 || index1 >= size || index2 >= size) return;
+
+
+        int firstIndex = Math.min(index1, index2);
+        int secondIndex = Math.max(index1, index2);
+
+        // Remove the first card (from the lower index)
+        Card c1 = remove_from_index(firstIndex);
+
+        // Remove the second card (from the higher index, adjusted because the list is now smaller)
+        Card c2;
+        if (index1 < index2) {
+            c2 = remove_from_index(secondIndex - 1);  // Shift secondIndex down by 1 because 1 element was removed
+        } else {
+            c2 = remove_from_index(secondIndex);
+        }
+
+        // Insert c1 into the higher index position
+        // Insert c2 into the lower index position
+        if (c1 != null && c2 != null) {
+            insert_at_index(c1, secondIndex);
+            insert_at_index(c2, firstIndex);
+        }
     }
 
     // add card at the end of the list
     public void add_at_tail(Card data) {
-        // FIXME
+        Node newNode = new Node(data);
+        if (tail == null) {
+            head = tail = newNode;
+        } else {
+            tail.next = newNode;
+            newNode.prev = tail;
+            tail = newNode;
+        }
+        size++;
     }
 
     // remove a card from the beginning of the list
     public Card remove_from_head() {
-        // FIXME
+        if (head == null) return null;
+        Card removedData = head.data;
+        head = head.next;
+        if (head != null) {
+            head.prev = null;
+        } else {
+            tail = null;
+        }
+        size--;
+        return removedData;
     }
 
     // check to make sure the linked list is implemented correctly by iterating forwards and backwards
